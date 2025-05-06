@@ -1,0 +1,13 @@
+.
+./posts
+./components
+./app
+./app/about
+./app/posts
+./app/posts/[slug]
+./app/styles
+./app/styles/utils
+./src
+./src/app
+./public
+./utils
