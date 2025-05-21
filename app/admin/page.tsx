@@ -1,56 +1,72 @@
 'use client';
-import { useState } from 'react';
+
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Layout from '@/components/layout';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
-export default function AdminPage() {
-  const router = useRouter();
-  const [title, setTitle] = useState('');
-  const [date, setDate] = useState('');
-  const [description, setDescription] = useState('');
-  const [tags, setTags] = useState('');
-  const [content, setContent] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-     // 🔒 タイトルが空だと保存できないようにガード
-  if (!title.trim()) {
-    alert('タイトルは必須です');
-    return;
-  }
-    const res = await fetch('/api/posts', {
-      method: 'POST',
-      body: JSON.stringify({
-        title,
-        date,
-        description,
-        tags: tags.split(',').map((t) => t.trim()),
-        content,
-      }),
-    });
+export default function AdminDashboard() {
+    const router = useRouter();
+    const [authorized, setAuthorized] = useState(false);
+    const [checking, setChecking] = useState(true);
+    const [posts, setPosts] = useState<any[]>([]);
 
-    const result = await res.json();
-    if (res.ok) {
-      alert('投稿に成功しました');
-      router.push('/'); // ✅ 投稿後に遷移
-    } else {
-      alert('エラー: ' + result.error);
-    }
-  };
 
-  return (
-    <Layout>
-    <div className="max-w-3xl mx-auto p-6 text-white">
-      <h1 className="text-2xl font-bold mb-4">記事投稿</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input type="text" placeholder="タイトル" value={title} onChange={(e) => setTitle(e.target.value)} className="w-full p-2 bg-gray-800 rounded" />
-        <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-full p-2 bg-gray-800 rounded" />
-        <input type="text" placeholder="説明" value={description} onChange={(e) => setDescription(e.target.value)} className="w-full p-2 bg-gray-800 rounded" />
-        <input type="text" placeholder="タグ（カンマ区切り）" value={tags} onChange={(e) => setTags(e.target.value)} className="w-full p-2 bg-gray-800 rounded" />
-        <textarea placeholder="本文" value={content} onChange={(e) => setContent(e.target.value)} className="w-full p-2 h-40 bg-gray-800 rounded" />
-        <button type="submit" className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-700">投稿</button>
-      </form>
-    </div>
-    </Layout>
-  );
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            if (!user || user.email !== 'minatomori828@gmail.com') {
+                alert('アクセス権限がありません');
+                router.push('/login');
+                return;
+            }
+
+            setAuthorized(true);
+            setChecking(false);
+
+            // 🔽 投稿一覧をFirestoreから取得
+            const querySnapshot = await getDocs(collection(db, 'posts'));
+            const postsData = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setPosts(postsData); // 投稿一覧をstateに保存
+        });
+
+        return () => unsubscribe();
+    }, [router]);
+
+
+    if (checking) return <p className="p-6 text-white">確認中...</p>;
+    if (!authorized) return null;
+
+    return (
+        <div className="max-w-2xl mx-auto p-6 text-white">
+            <h1 className="text-3xl font-bold mb-6">管理画面</h1>
+            <p className="mb-4">いまやらねばいつできる わしがやらねばたれがやる</p>
+            <p className="mb-4">不老　六十七十ははなたれこぞう　おとこざかりは百から百から　わしもこれからこれから</p>
+            <div className="space-y-4">
+                <button
+                    onClick={() => router.push('/admin/post')}
+                    className="block w-full text-left px-4 py-2 bg-blue-600 rounded hover:bg-blue-700"
+                >
+                    📄 投稿
+                </button>
+                {/* 将来的に追加できるボタンたち */}
+                {/* <button>📋 投稿編集</button> */}
+                
+
+<button
+  onClick={() => router.push('/admin/edit')}
+  className="block w-full text-left px-4 py-2 bg-purple-600 rounded hover:bg-purple-700"
+>
+  ✏️ 投稿編集
+</button>
+
+                {/* <button>⚙️ 設定</button> */}
+            </div>
+        </div>
+    );
 }
