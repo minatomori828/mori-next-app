@@ -1,19 +1,28 @@
-import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { getFirestore } from "firebase/firestore"; // ← Firestore を追加！
+// ✅ src/lib/firebase.ts に貼り付けてOK
+
+import { initializeApp, getApps, getApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
+
+// console.log('API KEY:', process.env.NEXT_PUBLIC_FIREBASE_API_KEY);
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCO3DxgUJrLgY6t5feeB7RmisCfvph4NWA",
-    authDomain: "mori-next-app.firebaseapp.com",
-    projectId: "mori-next-app",
-    storageBucket: "mori-next-app.firebasestorage.app",
-    messagingSenderId: "314283561438",
-    appId: "1:314283561438:web:ee07081181eb1bc6988d4f"
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-const app = initializeApp(firebaseConfig);
 
+// ✅ すでに初期化されていればそれを使う（エラー防止）
+const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+
+// ✅ 必要な機能を export
 const auth = getAuth(app);
-const db = getFirestore(app); // ← 追加！
+const db = getFirestore(app);
 
-export { auth, db }; // ← db も export
+export { app, auth, db };
+
+

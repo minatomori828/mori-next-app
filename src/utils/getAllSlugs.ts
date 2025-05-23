@@ -1,11 +1,8 @@
-import fs from 'fs';
-import path from 'path';
+// utils/getAllSlugs.ts
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
-const postsDirectory = path.join(process.cwd(), 'posts');
-
-export function getAllSlugs(): string[] {
-  return fs
-    .readdirSync(postsDirectory)
-    .filter((file) => file.endsWith('.md'))
-    .map((file) => file.replace(/\.md$/, ''));
+export async function getAllSlugs() {
+  const snapshot = await getDocs(collection(db, 'posts'));
+  return snapshot.docs.map(doc => doc.id);
 }

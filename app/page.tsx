@@ -3,11 +3,10 @@ import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
-export default function HomePage() {
-  const posts = getPostList();
+export default async function HomePage() {
+  const posts = await getPostList(); // 🔥 非同期対応！
 
   return (
-
     <main className="min-h-screen bg-[#0f1e1e] text-[#c7e1d6] p-6">
       <h1 className="text-4xl font-bold text-[#e3fcec] mb-8 text-center">
         記事一覧
