@@ -13,7 +13,6 @@ export async function generateStaticParams() {
 }
 
 export default async function PostDetailPage({ params }: Props) {
-  const slug = await params.slug;
   const post = await getPostBySlug(params.slug);
 
   if (!post) {

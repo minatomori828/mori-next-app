@@ -5,9 +5,6 @@ import { useRouter } from 'next/navigation';
 import { onAuthStateChanged, getAuth } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 
-
-
-
 export default function PostPage() {
   const router = useRouter();
   const [authorized, setAuthorized] = useState(false);
@@ -20,26 +17,22 @@ export default function PostPage() {
   const [content, setContent] = useState('');
 
   useEffect(() => {
-console.log("✅ 現在のログインユーザー:", auth.currentUser);
-}, []);
-
-  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (!user || user.email !== 'minatomori828@gmail.com') {
         alert('ログインが必要です');
         router.push('/login');
-        return;
+      } else {
+        setAuthorized(true);
+        setChecking(false);
       }
-      setAuthorized(true);
-      setChecking(false);
     });
-
 
     return () => unsubscribe();
   }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     const user = getAuth().currentUser;
     if (!user) {
       alert('認証情報が取得できませんでした');
@@ -55,7 +48,7 @@ console.log("✅ 現在のログインユーザー:", auth.currentUser);
         description,
         tags: tags.split(',').map((t) => t.trim()),
         content,
-        uid: user.uid, // 🔥 これを一緒に送る
+        uid: user.uid, // 🔥 管理対象
       }),
     });
 
@@ -67,8 +60,9 @@ console.log("✅ 現在のログインユーザー:", auth.currentUser);
       } else {
         alert('エラー: ' + result.error);
       }
-    } catch {
+    } catch (err) {
       alert('サーバーからの応答が正しくありませんでした');
+      console.error(err);
     }
   };
 
