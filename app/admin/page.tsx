@@ -14,7 +14,7 @@ export default function AdminDashboard() {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            if (!user || user.email !== 'minatomori828@gmail.com') {
+            if (!user || user.email !== 'minatomori828@gmail.com','minato.sjh@gmail.com') {
                 alert('アクセス権限がありません');
                 router.push('/login');
                 return;
