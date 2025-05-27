@@ -4,15 +4,12 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
 
 
 export default function AdminDashboard() {
     const router = useRouter();
     const [authorized, setAuthorized] = useState(false);
     const [checking, setChecking] = useState(true);
-    const [posts, setPosts] = useState<any[]>([]);
 
 
     useEffect(() => {
@@ -25,14 +22,6 @@ export default function AdminDashboard() {
 
             setAuthorized(true);
             setChecking(false);
-
-            // 🔽 投稿一覧をFirestoreから取得
-            const querySnapshot = await getDocs(collection(db, 'posts'));
-            const postsData = querySnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-            setPosts(postsData); // 投稿一覧をstateに保存
         });
 
         return () => unsubscribe();

@@ -7,13 +7,28 @@ interface PageProps {
   };
 }
 
+<<<<<<< HEAD
 // 静的パス生成（事前ビルド対応）
 export async function generateStaticParams(): Promise<PageProps["params"][]> {
+=======
+// 静的パス生成
+export async function generateStaticParams() {
+>>>>>>> 5fb4c87 (Fix: wrap PostDetailPage with non-async default export)
   const slugs = await getAllSlugs();
   return slugs.map((slug) => ({ slug }));
 }
 
+<<<<<<< HEAD
 export default async function PostDetailPage({ params }: PageProps) {
+=======
+// ラッパー関数（default export）で props を受け取る
+export default function PostDetailPageWrapper(props: Props) {
+  return <PostDetailPage {...props} />;
+}
+
+// 本体の async 関数（default exportではない）
+async function PostDetailPage({ params }: Props) {
+>>>>>>> 5fb4c87 (Fix: wrap PostDetailPage with non-async default export)
   const post = await getPostBySlug(params.slug);
 
   if (!post) {
