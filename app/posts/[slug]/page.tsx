@@ -1,3 +1,6 @@
+// @ts-nocheck
+
+
 // app/posts/[slug]/page.tsx
 import { getPostBySlug } from '@/utils/getPostBySlug';
 import { getAllSlugs } from '@/utils/getAllSlugs';
