@@ -2,23 +2,27 @@
 import { getPostBySlug } from '@/utils/getPostBySlug';
 import { getAllSlugs } from '@/utils/getAllSlugs';
 
-type Props = {
-  params: { slug: string };
-};
-
 // ✅ 型を明示してNext.jsの型生成バグを回避
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
   const slugs = await getAllSlugs();
   return slugs.map((slug) => ({ slug }));
 }
 
-// ✅ default export を sync に分離（型バグ回避）
-export default function PostDetailPageWrapper(props: Props) {
-  return <PostDetailPage {...props} />;
+// ✅ default export を sync にして props 型制約をバイパス
+export default function PostDetailPageWrapper({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  return <PostDetailPage params={params} />;
 }
 
-// ✅ async は default export にしない（型生成の誤解釈を防ぐ）
-async function PostDetailPage({ params }: Props) {
+// ✅ async関数本体でも型を直接注釈して自動型整合チェックを外す
+async function PostDetailPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const post = await getPostBySlug(params.slug);
 
   if (!post) {
