@@ -1,5 +1,4 @@
 // app/tags/[tag]/page.tsx
-import Layout from '@/components/layout';
 import { getPostList } from '@/utils/getPosts';
 import Link from 'next/link';
 
@@ -14,7 +13,6 @@ export default function TagPage({ params }: Props) {
   );
 
   return (
-    <Layout>
       <main className="min-h-screen bg-[#0f1e1e] text-[#c7e1d6] p-6">
         <h1 className="text-3xl font-bold text-[#e3fcec] mb-6">
           タグ: <span className="text-green-400">#{tag}</span>
@@ -36,6 +34,5 @@ export default function TagPage({ params }: Props) {
           </div>
         )}
       </main>
-    </Layout>
   );
 }
