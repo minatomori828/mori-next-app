@@ -1,34 +1,24 @@
+// app/posts/[slug]/page.tsx
 import { getPostBySlug } from '@/utils/getPostBySlug';
 import { getAllSlugs } from '@/utils/getAllSlugs';
 
-interface PageProps {
-  params: {
-    slug: string;
-  };
-}
+type Props = {
+  params: { slug: string };
+};
 
-<<<<<<< HEAD
-// 静的パス生成（事前ビルド対応）
-export async function generateStaticParams(): Promise<PageProps["params"][]> {
-=======
-// 静的パス生成
-export async function generateStaticParams() {
->>>>>>> 5fb4c87 (Fix: wrap PostDetailPage with non-async default export)
+// ✅ 型を明示してNext.jsの型生成バグを回避
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
   const slugs = await getAllSlugs();
   return slugs.map((slug) => ({ slug }));
 }
 
-<<<<<<< HEAD
-export default async function PostDetailPage({ params }: PageProps) {
-=======
-// ラッパー関数（default export）で props を受け取る
+// ✅ default export を sync に分離（型バグ回避）
 export default function PostDetailPageWrapper(props: Props) {
   return <PostDetailPage {...props} />;
 }
 
-// 本体の async 関数（default exportではない）
+// ✅ async は default export にしない（型生成の誤解釈を防ぐ）
 async function PostDetailPage({ params }: Props) {
->>>>>>> 5fb4c87 (Fix: wrap PostDetailPage with non-async default export)
   const post = await getPostBySlug(params.slug);
 
   if (!post) {
