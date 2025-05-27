@@ -1,10 +1,11 @@
-// app/posts/[slug]/page.tsx
 import { getPostBySlug } from '@/utils/getPostBySlug';
-import { getAllSlugs } from '@/utils/getAllSlugs'; // ✅ 正しいファイルから読み込む
+import { getAllSlugs } from '@/utils/getAllSlugs';
 
-type Props = {
-  params: { slug: string };
-};
+interface PageProps {
+  params: {
+    slug: string;
+  };
+}
 
 // 静的パス生成（事前ビルド対応）
 export async function generateStaticParams() {
@@ -12,13 +13,11 @@ export async function generateStaticParams() {
   return slugs.map((slug) => ({ slug }));
 }
 
-export default async function PostDetailPage({ params }: Props) {
+export default async function PostDetailPage({ params }: PageProps) {
   const post = await getPostBySlug(params.slug);
 
   if (!post) {
-    return (
-      <div>記事が見つかりませんでした。</div>
-    );
+    return <div>記事が見つかりませんでした。</div>;
   }
 
   return (
