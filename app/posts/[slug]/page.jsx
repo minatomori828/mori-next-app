@@ -1,31 +1,17 @@
-// @ts-nocheck
-
-
-// app/posts/[slug]/page.tsx
+// app/posts/[slug]/page.jsx
 import { getPostBySlug } from '@/utils/getPostBySlug';
 import { getAllSlugs } from '@/utils/getAllSlugs';
 
-// ✅ 型を明示してNext.jsの型生成バグを回避
-export async function generateStaticParams(): Promise<{ slug: string }[]> {
+export async function generateStaticParams() {
   const slugs = await getAllSlugs();
   return slugs.map((slug) => ({ slug }));
 }
 
-// ✅ default export を sync にして props 型制約をバイパス
-export default function PostDetailPageWrapper({
-  params,
-}: {
-  params: { slug: string };
-}) {
+export default function PostDetailPageWrapper({ params }) {
   return <PostDetailPage params={params} />;
 }
 
-// ✅ async関数本体でも型を直接注釈して自動型整合チェックを外す
-async function PostDetailPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+async function PostDetailPage({ params }) {
   const post = await getPostBySlug(params.slug);
 
   if (!post) {
@@ -38,7 +24,7 @@ async function PostDetailPage({
         <div className="flex flex-wrap justify-between items-center mb-4">
           <h1 className="text-4xl font-bold text-[#e3fcec]">{post.title}</h1>
           <div className="flex flex-wrap gap-2">
-            {post.tags.map((tag: string) => (
+            {post.tags.map((tag) => (
               <span key={tag} className="bg-gray-700 text-sm text-white px-2 py-1 rounded">
                 {tag}
               </span>
