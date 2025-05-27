@@ -11,8 +11,9 @@ export default function PostDetailPageWrapper({ params }) {
   return <PostDetailPage params={params} />;
 }
 
-async function PostDetailPage({ params }) {
-  const post = await getPostBySlug(params.slug);
+async function PostDetailPage(props) {
+  const { slug } = await props.params;
+  const post = await getPostBySlug(slug);
 
   if (!post) {
     return <div>記事が見つかりませんでした。</div>;
@@ -24,7 +25,7 @@ async function PostDetailPage({ params }) {
         <div className="flex flex-wrap justify-between items-center mb-4">
           <h1 className="text-4xl font-bold text-[#e3fcec]">{post.title}</h1>
           <div className="flex flex-wrap gap-2">
-            {post.tags.map((tag) => (
+            {post.tags?.map((tag) => (
               <span key={tag} className="bg-gray-700 text-sm text-white px-2 py-1 rounded">
                 {tag}
               </span>
