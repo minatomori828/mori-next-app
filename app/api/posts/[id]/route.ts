@@ -3,13 +3,21 @@ import { db } from '@/lib/firebase';
 import { doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 
 // GET: 特定の投稿を取得
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest) {
   try {
-    const docRef = doc(db, 'posts', params.id);
+    const id = req.nextUrl.pathname.split('/').pop(); // URLからIDを取得
+
+    if (!id) {
+      return NextResponse.json({ error: 'IDが指定されていません' }, { status: 400 });
+    }
+
+    const docRef = doc(db, 'posts', id);
     const snapshot = await getDoc(docRef);
+
     if (!snapshot.exists()) {
       return NextResponse.json({ error: '記事が存在しません' }, { status: 404 });
     }
+
     return NextResponse.json(snapshot.data(), { status: 200 });
   } catch (error: any) {
     return NextResponse.json({ error: error.message || '取得エラー' }, { status: 500 });
@@ -17,8 +25,14 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 }
 
 // PUT: 特定の投稿を更新
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest) {
   try {
+    const id = req.nextUrl.pathname.split('/').pop();
+
+    if (!id) {
+      return NextResponse.json({ error: 'IDが指定されていません' }, { status: 400 });
+    }
+
     const data = await req.json();
     const { title, date, description, tags, content } = data;
 
@@ -26,7 +40,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
       return NextResponse.json({ error: 'タイトルと本文は必須です' }, { status: 400 });
     }
 
-    const docRef = doc(db, 'posts', params.id);
+    const docRef = doc(db, 'posts', id);
     await updateDoc(docRef, {
       title,
       date,
