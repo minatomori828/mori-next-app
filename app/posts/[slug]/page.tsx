@@ -8,7 +8,7 @@ interface PageProps {
 }
 
 // 静的パス生成（事前ビルド対応）
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<PageProps["params"][]> {
   const slugs = await getAllSlugs();
   return slugs.map((slug) => ({ slug }));
 }
