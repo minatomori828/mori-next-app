@@ -67,9 +67,14 @@ export default function AboutPage() {
                 <td className="p-3 border border-gray-700">効率的なUI設計とデザイン実装</td>
               </tr>
               <tr>
-                <td className="p-3 border border-gray-700">ContentLayer / Markdown</td>
-                <td className="p-3 border border-gray-700">記事のデータ管理と型付き読み込み</td>
-                <td className="p-3 border border-gray-700">静的データと型設計の連携</td>
+                <td className="px-4 py-2 border border-gray-600">Firebase Authentication</td>
+                <td className="px-4 py-2 border border-gray-600">Googleアカウントでの認証制御</td>
+                <td className="px-4 py-2 border border-gray-600">セキュアなログインとアクセス制限の実装</td>
+              </tr>
+              <tr>
+                <td className="px-4 py-2 border border-gray-600">Firebase Firestore</td>
+                <td className="px-4 py-2 border border-gray-600">記事データの保存・取得</td>
+                <td className="px-4 py-2 border border-gray-600">NoSQL型データ設計とクエリ操作</td>
               </tr>
               <tr>
                 <td className="p-3 border border-gray-700">Git / GitHub</td>
